@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi9/podman:9.3-12
+FROM registry.access.redhat.com/ubi9/podman:9.4
 
 # Install Git, container tools, and Node.js
 RUN dnf install git buildah skopeo -y && \
