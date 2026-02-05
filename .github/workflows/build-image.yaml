@@ -1,0 +1,32 @@
+name: Build Image using Containerfile
+on:
+  push:
+
+jobs:
+  build:
+    name: Build and push image
+    runs-on: ubuntu-22.04
+
+    env:
+      QUAY_IMAGE: 'quay.io/kevchu3/act-ubi-job-container'
+
+    steps:
+    - uses: actions/checkout@v6
+
+    - name: Build and tag image
+      uses: redhat-actions/buildah-build@v2
+      with:
+        tags: ${{ env.QUAY_IMAGE }}:latest
+        containerfiles: |
+          ./Containerfile
+
+    - name: Push To Quay.io
+      id: push-to-quay
+      uses: redhat-actions/push-to-registry@v2
+      with:
+        tags: ${{ env.QUAY_IMAGE }}:latest
+        username: ${{ secrets.QUAY_REGISTRY_USER }}
+        password: ${{ secrets.QUAY_REGISTRY_PASSWORD }}
+
+    - name: Print image URL
+      run: echo "Image pushed to ${{ steps.push-to-quay.outputs.registry-paths }}"
